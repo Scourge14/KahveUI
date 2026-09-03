@@ -1,9 +1,10 @@
-const CACHE_NAME = "kahve-carki-v4";
+const CACHE_NAME = "kahve-carki-v6";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./manifest.json",
   "./service-worker.js",
+  "./apple-touch-icon.png",
   "./icon-192.png",
   "./icon-512.png"
 ];

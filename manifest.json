@@ -1,11 +1,12 @@
 {
   "name": "Kahve Çarkı",
   "short_name": "Kahve",
+  "description": "Kahveni çevir, günün seçimini ve çarkın sana bıraktığı küçük notu keşfet.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#F7F1E8",
-  "theme_color": "#4A2F24",
+  "background_color": "#FFF1F3",
+  "theme_color": "#874457",
   "icons": [
     {
       "src": "./icon-192.png",

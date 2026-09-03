@@ -3,31 +3,38 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="theme-color" content="#4A2F24" />
+<meta name="theme-color" content="#874457" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-title" content="Kahve Çarkı" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="description" content="Kahveni çevir, günün seçimini ve çarkın sana bıraktığı küçük notu keşfet." />
 <link rel="manifest" href="./manifest.json" />
+<link rel="icon" href="./icon-192.png" />
 <link rel="apple-touch-icon" href="./icon-192.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png" />
 <title>Kahve &#199;ark&#305;</title>
 
 <style>
 :root{
-  --bg-main:#F7F1E8;
-  --bg-page:#FAF6F1;
-  --bg-card:#FFF9F0;
-  --bg-soft:#F1E6D8;
-  --bg-muted:#E6D6C4;
+  --bg-main:#FFF1F3;
+  --bg-page:#FFF9F5;
+  --bg-card:#FFFCF8;
+  --bg-soft:#FBE6E8;
+  --bg-muted:#EED8D4;
   --coffee-dark:#2B1D16;
   --coffee:#4A2F24;
   --coffee-soft:#7A5543;
   --coffee-light:#B08A6A;
-  --caramel:#C88A4A;
-  --caramel-soft:#E1B77A;
-  --caramel-light:#F3D7A6;
+  --caramel:#D49360;
+  --caramel-soft:#F0BE9B;
+  --caramel-light:#F8D9B8;
   --latte:#D7B99A;
-  --cream:#FFF3E0;
+  --cream:#FFF5EA;
+  --rose:#B95F79;
+  --rose-deep:#874457;
+  --rose-soft:#F3BAC9;
+  --blush:#FBE0E5;
+  --lilac:#E8DDF1;
   --text-main:#2B1D16;
   --text-secondary:#4A3A32;
   --text-muted:#7A6A5F;
@@ -35,26 +42,27 @@
   --text-disabled:#B8AA9D;
   --primary:#4A2F24;
   --primary-hover:#3A241B;
-  --primary-gradient:linear-gradient(135deg, #2B1D16 0%, #5A392B 100%);
-  --secondary:#C88A4A;
-  --secondary-hover:#A96F38;
-  --secondary-gradient:linear-gradient(135deg, #E1B77A 0%, #C88A4A 100%);
+  --primary-gradient:linear-gradient(135deg, #633746 0%, #9A5268 100%);
+  --secondary:#D9879E;
+  --secondary-hover:#B85F78;
+  --secondary-gradient:linear-gradient(135deg, #F7C6D2 0%, #D9879E 100%);
   --mocha:#6B3F32;
   --mocha-soft:#E9D2C4;
   --pink-cream:#F3D6D2;
   --border-soft:#E0D3C2;
   --border-card:#D8C3AB;
-  --border-caramel:rgba(200, 138, 74, 0.45);
+  --border-caramel:rgba(185, 95, 121, 0.34);
   --border-coffee:rgba(74, 47, 36, 0.18);
   --shadow-panel:0 18px 45px rgba(43, 29, 22, 0.12);
   --shadow-card:0 12px 30px rgba(43, 29, 22, 0.10);
   --shadow-soft:0 8px 22px rgba(43, 29, 22, 0.08);
-  --caramel-glow:0 0 28px rgba(200, 138, 74, 0.35);
-  --wheel-1:#FFF3E0;
-  --wheel-2:#D7B99A;
-  --wheel-3:#C88A4A;
-  --wheel-4:#6B3F32;
-  --wheel-5:#E8D1B5;
+  --caramel-glow:0 0 30px rgba(185, 95, 121, 0.3);
+  --wheel-1:#FFF0E7;
+  --wheel-2:#F5C7CF;
+  --wheel-3:#E9D6EF;
+  --wheel-4:#C98D9F;
+  --wheel-5:#F6D5B5;
+  --spin-duration:2.6s;
 }
 
 *{
@@ -77,7 +85,8 @@ body{
   font-family:"Trebuchet MS", "Segoe UI", sans-serif;
   background:
     radial-gradient(circle at top, rgba(255,255,255,.62), transparent 24%),
-    radial-gradient(circle at 15% 15%, rgba(243,215,166,.28), transparent 18%),
+    radial-gradient(circle at 15% 15%, rgba(243,186,201,.34), transparent 18%),
+    radial-gradient(circle at 88% 32%, rgba(232,221,241,.52), transparent 20%),
     linear-gradient(180deg, var(--bg-page) 0%, var(--bg-main) 48%, var(--bg-muted) 100%);
   color:var(--text-main);
   padding:18px;
@@ -92,8 +101,12 @@ body{
 .bg{
   background:
     radial-gradient(circle at 12% 24%, rgba(255,255,255,.28), transparent 18%),
-    radial-gradient(circle at 85% 16%, rgba(200,138,74,.16), transparent 17%),
+    radial-gradient(circle at 85% 16%, rgba(185,95,121,.16), transparent 17%),
     radial-gradient(circle at 50% 105%, rgba(74,47,36,.08), transparent 28%);
+}
+
+body.modal-open{
+  overflow:hidden;
 }
 
 .container{
@@ -106,12 +119,42 @@ body{
 
 .panel{
   position:relative;
+  overflow:hidden;
   padding:26px 18px 20px;
   border-radius:34px;
-  background:linear-gradient(180deg, rgba(255,249,240,.96), rgba(247,241,232,.92));
+  background:linear-gradient(180deg, rgba(255,252,248,.97), rgba(255,241,243,.93));
   border:1px solid var(--border-card);
   box-shadow:var(--shadow-panel), inset 0 1px 0 rgba(255,255,255,.65);
   backdrop-filter:blur(10px);
+}
+
+.panel::before,
+.panel::after{
+  content:"";
+  position:absolute;
+  border-radius:50%;
+  pointer-events:none;
+}
+
+.panel > *{
+  position:relative;
+  z-index:1;
+}
+
+.panel::before{
+  width:180px;
+  height:180px;
+  right:-88px;
+  top:-92px;
+  background:radial-gradient(circle, rgba(243,186,201,.42), rgba(243,186,201,0) 70%);
+}
+
+.panel::after{
+  width:150px;
+  height:150px;
+  left:-82px;
+  bottom:110px;
+  background:radial-gradient(circle, rgba(232,221,241,.5), rgba(232,221,241,0) 70%);
 }
 
 .badge{
@@ -120,7 +163,7 @@ body{
   gap:8px;
   padding:10px 16px;
   border-radius:999px;
-  background:rgba(255,249,240,.88);
+  background:rgba(255,248,248,.9);
   border:1px solid var(--border-caramel);
   box-shadow:var(--shadow-soft);
   margin-bottom:14px;
@@ -129,12 +172,17 @@ body{
 }
 
 h1{
-  font-size:clamp(36px,8vw,68px);
+  font-size:clamp(34px,6vw,54px);
   line-height:1;
   letter-spacing:.02em;
   margin-bottom:10px;
   color:var(--coffee-dark);
-  text-shadow:0 1px 0 rgba(255,255,255,.35);
+  background:linear-gradient(135deg, var(--coffee-dark), var(--rose));
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  text-shadow:0 1px 0 rgba(255,255,255,.24);
+  text-wrap:balance;
 }
 
 .subtitle{
@@ -212,7 +260,7 @@ h1{
   overflow:hidden;
   position:relative;
   border:5px solid var(--coffee);
-  transition:transform 3s cubic-bezier(.12,.75,.2,1);
+  transition:transform var(--spin-duration) cubic-bezier(.12,.75,.2,1);
   background:conic-gradient(
     var(--wheel-1) 0deg 60deg,
     var(--wheel-2) 60deg 120deg,
@@ -322,7 +370,9 @@ h1{
   margin-top:18px;
   padding:16px 16px 14px;
   border-radius:24px;
-  background:linear-gradient(180deg, rgba(255,249,240,.98), rgba(241,230,216,.94));
+  position:relative;
+  z-index:1;
+  background:linear-gradient(180deg, rgba(255,252,248,.98), rgba(251,224,229,.86));
   border:1px solid var(--border-card);
   box-shadow:var(--shadow-soft), inset 0 1px 0 rgba(255,255,255,.6);
 }
@@ -360,8 +410,8 @@ h1{
 }
 
 .ideas-input:focus{
-  border-color:var(--border-caramel);
-  box-shadow:0 0 0 4px rgba(200,138,74,.12);
+  border-color:var(--rose-soft);
+  box-shadow:0 0 0 4px rgba(185,95,121,.12);
 }
 
 .ideas-input:disabled{
@@ -573,7 +623,7 @@ h1{
   overflow:hidden;
   border-radius:50%;
   border:4px solid var(--coffee);
-  transition:transform 3s cubic-bezier(.12,.75,.2,1);
+  transition:transform var(--spin-duration) cubic-bezier(.12,.75,.2,1);
 }
 
 .idea-wheel-item{
@@ -676,7 +726,7 @@ h1{
 .modal{
   position:fixed;
   inset:0;
-  background:rgba(43,29,22,.42);
+  background:rgba(55,34,39,.46);
   display:none;
   justify-content:center;
   align-items:center;
@@ -691,8 +741,12 @@ h1{
 
 .popup{
   width:min(92vw,560px);
-  background:#FFF9F0;
-  border:1px solid rgba(200, 138, 74, 0.45);
+  max-height:calc(100dvh - 32px);
+  overflow-y:auto;
+  background:
+    radial-gradient(circle at 85% 8%, rgba(243,186,201,.4), transparent 24%),
+    linear-gradient(180deg, #FFFCF8 0%, #FFF0F3 100%);
+  border:1px solid rgba(185,95,121,.32);
   border-radius:34px;
   padding:34px 22px 28px;
   text-align:center;
@@ -715,7 +769,7 @@ h1{
   height:44px;
   border:none;
   border-radius:50%;
-  background:linear-gradient(180deg, var(--coffee-light) 0%, var(--mocha) 100%);
+  background:linear-gradient(180deg, var(--rose) 0%, var(--rose-deep) 100%);
   color:var(--bg-card);
   font-size:28px;
   cursor:pointer;
@@ -734,36 +788,53 @@ h1{
 
 .result{
   font-size:clamp(30px,7vw,48px);
-  color:var(--coffee-dark);
+  color:var(--rose-deep);
   font-weight:900;
-  margin-bottom:16px;
+  margin-bottom:14px;
+  text-wrap:balance;
+}
+
+.compliment-intro{
+  margin:0 auto 10px;
+  color:var(--rose-deep);
+  font-size:14px;
+  font-weight:800;
+  letter-spacing:.02em;
 }
 
 .message{
-  font-size:clamp(20px,4vw,30px);
+  max-width:470px;
+  margin:0 auto;
+  padding:18px 20px;
+  border:1px solid rgba(185,95,121,.24);
+  border-radius:24px;
+  background:rgba(255,252,248,.72);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8), 0 10px 24px rgba(135,68,87,.08);
+  font-size:clamp(19px,4vw,28px);
+  font-weight:700;
   line-height:1.35;
   color:var(--text-secondary);
   overflow-wrap:anywhere;
   white-space:normal;
+  text-wrap:balance;
 }
 
-.ok{
-  margin-top:26px;
-  border:none;
-  cursor:pointer;
-  min-height:48px;
-  padding:14px 46px;
-  border-radius:999px;
-  font-size:22px;
-  font-weight:900;
-  color:var(--bg-card);
-  background:var(--primary-gradient);
-  box-shadow:0 7px 0 var(--primary-hover);
+#modal .compliment-intro,
+#modal .message{
+  opacity:0;
+  transform:translateY(9px);
+  transition:opacity .45s ease, transform .45s ease;
+}
+
+#modal.reveal-note .compliment-intro,
+#modal.reveal-note .message{
+  opacity:1;
+  transform:translateY(0);
 }
 
 .heart{
   position:absolute;
-  color:var(--caramel-soft);
+  color:var(--rose-soft);
   animation:float 5s linear infinite;
   pointer-events:none;
 }
@@ -772,6 +843,31 @@ h1{
   from{transform:translateY(110vh) scale(.7);opacity:0;}
   20%{opacity:1;}
   to{transform:translateY(-20vh) scale(1.5);opacity:0;}
+}
+
+@media (prefers-reduced-motion:reduce){
+  :root{
+    --spin-duration:.01ms;
+  }
+
+  *,
+  *::before,
+  *::after{
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    scroll-behavior:auto !important;
+  }
+
+  #modal .compliment-intro,
+  #modal .message{
+    transition-duration:.01ms;
+  }
+}
+
+button:focus-visible,
+input:focus-visible{
+  outline:3px solid rgba(185,95,121,.42);
+  outline-offset:3px;
 }
 
 @media (max-width:520px){
@@ -933,9 +1029,9 @@ h1{
 
 <div class="container">
   <div class="panel">
-    <div class="badge">&#9749; G&uuml;n&uuml;n kahvesi seni bekliyor</div>
-    <h1>Kahve &#199;ark&#305; &#128150;</h1>
-    <div class="subtitle">&#199;ark&#305; &ccedil;evir, kahveni se&ccedil; ve yan&#305;nda mini bir g&uuml;zel s&ouml;z kap.</div>
+    <div class="badge">&#9749; K&uuml;&ccedil;&uuml;k bir kahve tesad&uuml;f&uuml;</div>
+    <h1>Bug&uuml;n Hangi Kahve Seni Se&ccedil;iyor? &#128150;</h1>
+    <div class="subtitle">&#199;ark&#305; &ccedil;evir; bug&uuml;n&uuml;n kahvesi ve sana b&#305;rakt&#305;&#287;&#305; k&uuml;&ccedil;&uuml;k not ortaya &ccedil;&#305;ks&#305;n.</div>
 
     <div class="wheel-wrap">
       <div class="pointer">&#9829;</div>
@@ -971,54 +1067,52 @@ h1{
       </div>
     </div>
 
-    <div class="hint">G&uuml;zel bir g&uuml;n i&ccedil;in &ccedil;ark&#305; &ccedil;evir&#9749; .</div>
-    <button class="spin-btn" id="spinBtn" type="button">&#199;ark&#305; D&ouml;nd&uuml;r &#10024;</button>
-    <div class="note">&#10024;</div>
+    <div class="hint">Haz&#305;rsan &ccedil;ark sana kahveni se&ccedil;sin &#9749;</div>
+    <button class="spin-btn" id="spinBtn" type="button">&#199;ark&#305; &#199;evir &#10024;</button>
+    <div class="note">Bir dokunu&#351;, tatl&#305; bir tesad&uuml;f.</div>
 
     <div class="ideas-section">
-      <h2 class="ideas-title">Denemek &#304;steyebilece&#287;imiz &#350;eyler</h2>
-      <div class="ideas-subtitle">Akl&#305;na gelen tatl&#305; fikirleri yaz.</div>
+      <h2 class="ideas-title">Baristalar&#305;n &Ouml;nerileri</h2>
+      <div class="ideas-subtitle">Bir dahaki geli&#351;imde denemem gereken kahveyi &ccedil;arka b&#305;rak.</div>
 
       <div class="ideas-entry">
-        <input class="ideas-input" id="ideaInput" type="text" maxlength="36" placeholder="&Ouml;rn: Milkshake vb." />
-        <button class="ideas-add-btn" id="ideaAddBtn" type="button">Ekle</button>
+        <input class="ideas-input" id="ideaInput" type="text" maxlength="36" aria-label="Kahve &ouml;nerisi" placeholder="&Ouml;rn: Cortado, Flat White..." />
+        <button class="ideas-add-btn" id="ideaAddBtn" type="button">&#199;arka Ekle</button>
       </div>
 
       <div class="ideas-helper">
-        <div class="ideas-note" id="ideaNote">&#199;ark i&ccedil;in en az 2 fikir ekle.</div>
-        <div class="ideas-limit" id="ideaLimit">En fazla 8 fikir ekleyebilirsin.</div>
+        <div class="ideas-note" id="ideaNote" aria-live="polite">&#304;lk kahve &ouml;nerisini sen b&#305;rakabilirsin.</div>
+        <div class="ideas-limit" id="ideaLimit">En fazla 8 kahve &ouml;nerisi eklenebilir.</div>
       </div>
 
       <div class="ideas-tags" id="ideaTags"></div>
 
-      <button class="ideas-open-btn" id="ideaOpenBtn" type="button" disabled>Fikir &#199;ark&#305;n&#305; A&ccedil; &#10024;</button>
+      <button class="ideas-open-btn" id="ideaOpenBtn" type="button" disabled>&Ouml;neri &#199;ark&#305;n&#305; A&ccedil; &#10024;</button>
     </div>
   </div>
 </div>
 
-<div class="modal" id="modal" aria-hidden="true">
-  <div class="popup">
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="coffeeModalTitle" aria-describedby="coffeeMessage" aria-hidden="true">
+  <div class="popup" tabindex="-1">
     <button class="close" id="closeBtn" type="button" aria-label="Kapat">&times;</button>
 
     <div class="cup">&#9749;</div>
-    <h2>Sen se&ccedil;ti&#287;in i&ccedil;in</h2>
+    <h2 id="coffeeModalTitle">Bug&uuml;n&uuml;n se&ccedil;imi</h2>
 
     <div class="result" id="coffeeName">Caramel Latte</div>
 
-    <div class="message" id="coffeeMessage">
-      Kahven kadar tatl&#305;,<br />
-      g&uuml;n&uuml;n kadar g&uuml;zel olsun &#9749;
+    <div class="compliment-intro">&#199;ark&#305;n sana k&uuml;&ccedil;&uuml;k bir notu var&hellip;</div>
+    <div class="message" id="coffeeMessage" aria-live="polite">
+      Bug&uuml;n tarz&#305;n da g&uuml;l&uuml;&#351;&uuml;n de &ccedil;ok g&uuml;zel; bu kahveye ayr&#305; yak&#305;&#351;acak.
     </div>
-
-    <button class="ok" id="okBtn" type="button">Harika! &#10024;</button>
   </div>
 </div>
 
-<div class="modal" id="ideaModal" aria-hidden="true">
-  <div class="popup idea-modal-popup">
+<div class="modal" id="ideaModal" role="dialog" aria-modal="true" aria-labelledby="ideaModalTitle" aria-hidden="true">
+  <div class="popup idea-modal-popup" tabindex="-1">
     <button class="close" id="ideaCloseBtn" type="button" aria-label="Kapat">&times;</button>
 
-    <div class="idea-modal-badge">&#10024; Fikir &#199;ark&#305;</div>
+    <div class="idea-modal-badge" id="ideaModalTitle">&#10024; Baristalar&#305;n &Ouml;neri &#199;ark&#305;</div>
 
     <div class="idea-wheel-wrap">
       <div class="idea-pointer">&#10022;</div>
@@ -1029,13 +1123,13 @@ h1{
       </div>
     </div>
 
-    <button class="spin-btn idea-spin-btn" id="ideaSpinBtn" type="button">Fikir &#199;ark&#305;n&#305; D&ouml;nd&uuml;r</button>
+    <button class="spin-btn idea-spin-btn" id="ideaSpinBtn" type="button">&Ouml;neri &#199;ark&#305;n&#305; &#199;evir</button>
 
-    <div class="idea-result" id="ideaResult">Bug&uuml;n&uuml;n fikri: Haz&#305;r m&#305;?</div>
-    <div class="idea-result-message" id="ideaResultMessage">Bence bu bahaneyle g&uuml;zel bir g&uuml;n ba&#351;lar &#9749;</div>
+    <div class="idea-result" id="ideaResult" aria-live="polite">S&#305;radaki kahvem: Haz&#305;r m&#305;?</div>
+    <div class="idea-result-message" id="ideaResultMessage">Bakal&#305;m &ccedil;ark hangi &ouml;neriyi &ouml;n&uuml;m&uuml;ze getirecek &#9749;</div>
 
     <div class="idea-actions">
-      <button class="idea-again-btn" id="ideaAgainBtn" type="button" disabled>Tekrar D&ouml;nd&uuml;r</button>
+      <button class="idea-again-btn" id="ideaAgainBtn" type="button" disabled>Yeniden &#199;evir</button>
       <button class="idea-close-btn" id="ideaDismissBtn" type="button">Kapat</button>
     </div>
   </div>
@@ -1048,7 +1142,6 @@ const coffeeName = document.getElementById("coffeeName");
 const coffeeMessage = document.getElementById("coffeeMessage");
 const spinBtn = document.getElementById("spinBtn");
 const closeBtn = document.getElementById("closeBtn");
-const okBtn = document.getElementById("okBtn");
 const ideaInput = document.getElementById("ideaInput");
 const ideaAddBtn = document.getElementById("ideaAddBtn");
 const ideaNote = document.getElementById("ideaNote");
@@ -1065,12 +1158,66 @@ const ideaResult = document.getElementById("ideaResult");
 const ideaResultMessage = document.getElementById("ideaResultMessage");
 
 const coffees = [
-  { name: "White Mocha" },
-  { name: "Ice Latte" },
-  { name: "Caramel Latte" },
-  { name: "Latte Spanish" },
-  { name: "Mocha" },
-  { name: "Vanilla Latte" }
+  {
+    name: "White Mocha",
+    compliments: [
+      "White Mocha yumuşak bir seçim; ama gülüşün ondan daha sıcak.",
+      "Bu kahveye bugün en çok zarif tarzın ve güzel gülüşün yakışacak.",
+      "White Mocha tatlı bir seçim; tarzın ve gülüşün bütün havayı tamamlıyor.",
+      "Kahve daha hazırlanmadı ama güzel enerjin çoktan buraya yansıdı.",
+      "Gülüşün, White Mocha'nın ilk yudumundan biraz daha hızlı iyi geliyor."
+    ]
+  },
+  {
+    name: "Ice Latte",
+    compliments: [
+      "Ice Latte serin olabilir; gülüşün ortamın bütün havasını ısıtıyor.",
+      "Tarzın Ice Latte kadar cool, gülüşünse beklenmedik kadar sıcak.",
+      "Bu seçim sana yakıştı; sade, enerjik ve akılda kalıcı.",
+      "Ice Latte hazır olmadan önce bile güzel enerjin buraya yansıdı.",
+      "Çarkın yorumu net: bugünkü tarzın bu kahvenin havasını yükseltti."
+    ]
+  },
+  {
+    name: "Caramel Latte",
+    compliments: [
+      "Caramel Latte tatlı bir seçim; ama bugünün tatlılığı konusunda yalnız değil.",
+      "Karamel bu kahveye, güzel enerjin de bugüne çok yakışıyor.",
+      "Bugün tarzın da gülüşün de çok güzel; Caramel Latte'ye ayrı yakışacak.",
+      "Bu kahvenin sıcaklığı, gülüşünün yanında biraz iddiasız kalabilir.",
+      "Çark tatlı bir kahve seçti; güzel tesadüf kısmını zaten tamamlamıştı."
+    ]
+  },
+  {
+    name: "Latte Spanish",
+    compliments: [
+      "Latte Spanish karakterli bir seçim; bugünkü tarzın gibi.",
+      "Bu kahvenin havası güçlü, ama gülüşün sahneyi yine de çalıyor.",
+      "Zarif tarzın Latte Spanish'e beklenmedik kadar iyi yakıştı.",
+      "Kahvenin enerjisi güzel; seninki daha hazırlanırken hissediliyor.",
+      "Çark seçim konusunda cesur çıktı; sana da tam olarak bu yakışırdı."
+    ]
+  },
+  {
+    name: "Mocha",
+    compliments: [
+      "Mocha yoğun olabilir; gülüşünün etkisi biraz daha güçlü.",
+      "Bugünkü tarzın Mocha kadar karakterli, gülüşünse çok daha yumuşak.",
+      "Bu kahveyi güzel yapan tarif olacak; bu anı güzel yapansa kesinlikle enerjin.",
+      "Mocha iyi seçim; tarzın da en az onun kadar akılda kalıcı.",
+      "Kahve daha gelmeden günün en güzel enerjisi masaya ulaştı."
+    ]
+  },
+  {
+    name: "Vanilla Latte",
+    compliments: [
+      "Vanilla Latte zarif bir seçim; bugünkü enerjin gibi.",
+      "Bu kahvenin sadeliğine tarzın, sıcaklığına gülüşün yakışıyor.",
+      "Gülüşün, Vanilla Latte'nin ilk yudumundan biraz daha hızlı iyi geliyor.",
+      "Çark yumuşak bir kahve seçti; sen ortama zaten güzel bir enerji kattın.",
+      "Bugün tarzın da gülüşün de çok güzel; bu seçim seni tamamladı."
+    ]
+  }
 ];
 
 let rotation = 0;
@@ -1079,6 +1226,9 @@ let touchTriggered = false;
 const IDEA_STORAGE_KEY = "kahve-carki-fikirler";
 const LAST_COMPLIMENT_KEY = "lastCompliment";
 const IDEA_MAX_COUNT = 8;
+const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const SPIN_DELAY = prefersReducedMotion ? 80 : 2700;
+const NOTE_REVEAL_DELAY = prefersReducedMotion ? 0 : 550;
 const ideaWheelColors = [
   "var(--wheel-1)",
   "var(--wheel-2)",
@@ -1091,86 +1241,10 @@ const ideaWheelColors = [
 ];
 let ideaRotation = 0;
 let ideaSpinning = false;
+let ideaSpinTimer = 0;
+let complimentRevealTimer = 0;
+let lastFocusedElement = null;
 let ideas = loadIdeas();
-
-const compliments = [
-  "Bugün kahveden daha tatlı bir şey varsa o da senin gülüşün olabilir ☕",
-  "Bu kahve seçildiyse günün güzel geçmeye niyetli demektir.",
-  "Kahven güzel, enerjin daha güzel.",
-  "Bugün biraz fazla iyi görünüyorsun, kahve bile fark etti.",
-  "Kahve çarkı söylüyor: bugün gülümsemek sana çok yakışacak.",
-  "Sen kahveni seçtin, kahve de sana güzel bir gün seçti.",
-  "Bugün modun latte köpüğü gibi: yumuşak, tatlı ve hafif havalı.",
-  "Bu kahve sana sakinlik, şans ve minik bir tebessüm getirsin.",
-  "Bugün enerjin etrafa iyi gelen insanlardan.",
-  "Karamel gibi bir gün olsun: sıcak, tatlı ve akılda kalan.",
-  "Kahve bahane, bugün güzel hissetmen şahane.",
-  "Bugün kendini biraz daha sev; kahve de aynı fikirde.",
-  "Bu çark boşuna dönmedi, bugün şans senden yana.",
-  "Kahveni yudumla, çünkü bugün acele değil keyif günü.",
-  "Bugün küçük bir mesaj, tatlı bir bakış veya güzel bir plan çıkabilir.",
-  "Kahven sıcak, enerjin tatlı, havan yerinde.",
-  "Bugün birinin aklında kalma ihtimalin yüksek gibi.",
-  "Bu kadar tatlı bir kahve seçimi tesadüf olamaz.",
-  "Gülüşün bugün kahve kokusu gibi ortama iyi gelecek.",
-  "Bugün senin modun: soft, tatlı ve biraz da tehlikeli.",
-  "Köpüğü bol, şansı yüksek, enerjisi güzel bir gün olsun.",
-  "Bugün aynaya bir kere daha bak; kahve haklı, iyi görünüyorsun.",
-  "Kahve çarkı bugün sana güzel bir enerji yazdı.",
-  "Bugün biri senin tatlılığını fark edebilir, haberin olsun.",
-  "Kahvenin yanına en çok yakışan şey bugün senin gülüşün.",
-  "Biraz kahve, biraz cesaret; bugün her şey daha kolay.",
-  "Bugün kalbinin istediği şey biraz daha yakına gelebilir.",
-  "Sen bugün sıradan bir günün güzel sebebi olabilirsin.",
-  "Kahve fincanı küçük ama bugünkü enerjin büyük.",
-  "Bugün tatlı konuşmalar ve güzel tesadüfler günü.",
-  "Kahve seçildi, enerji yükseldi, sıra sende.",
-  "Bugün ‘iyi ki’ dedirtecek küçük bir an yaşayabilirsin.",
-  "Senin enerjin bugün filtre kahve değil, direkt özel seri.",
-  "Bu kahve sana ‘kendini hafife alma’ diyor.",
-  "Bugün biraz havalı olmak serbest, hatta gerekli.",
-  "Kahve köpüğü gibi hafif ama etkisi büyük bir enerjin var.",
-  "Bugün güzel şeyler sana küçük küçük yaklaşabilir.",
-  "Bu çark sana tatlılık, sakinlik ve biraz da şans verdi.",
-  "Bugün gülüşünle birinin gününü güzelleştirebilirsin.",
-  "Kahveni al, omuzlarını indir; bugün iyi şeyler mümkün.",
-  "Bugün kahve bahanesiyle güzel bir gülümseme yakalayabilirsin.",
-  "Kahve falı değil ama çark net konuştu: bugün tatlısın.",
-  "Bu kahve sana minik bir şans, bolca tatlılık getirsin.",
-  "Bugün enerjin tam kahve yanında uzun sohbetlik.",
-  "Kahve sıcak, gün güzel, sen zaten yeterince havalısın.",
-  "Bugün birinin içinden ‘ne güzel gülüyor’ geçebilir.",
-  "Kahve seçimin bile stil sahibi, bugün modun yüksek.",
-  "Bugün kendine güzel davran; zaten bunu hak ediyorsun.",
-  "Bu çark bugün sana güzel bir bahaneyle gülümse dedi.",
-  "Kahveni al, çünkü bugün küçük mutlulukların günü.",
-  "Bugün biraz parlıyorsun, kahve de bunu saklayamadı."
-];
-
-const standoutCompliments = [
-  "Bugün kahveden daha tatlı bir şey varsa o da senin gülüşün olabilir ☕",
-  "Bugün biraz fazla iyi görünüyorsun, kahve bile fark etti.",
-  "Kahve çarkı söylüyor: bugün gülümsemek sana çok yakışacak.",
-  "Sen kahveni seçtin, kahve de sana güzel bir gün seçti.",
-  "Bugün modun latte köpüğü gibi: yumuşak, tatlı ve hafif havalı.",
-  "Bugün birinin aklında kalma ihtimalin yüksek gibi.",
-  "Bu kadar tatlı bir kahve seçimi tesadüf olamaz.",
-  "Gülüşün bugün kahve kokusu gibi ortama iyi gelecek.",
-  "Bugün senin modun: soft, tatlı ve biraz da tehlikeli.",
-  "Bugün aynaya bir kere daha bak; kahve haklı, iyi görünüyorsun.",
-  "Bugün biri senin tatlılığını fark edebilir, haberin olsun.",
-  "Kahvenin yanına en çok yakışan şey bugün senin gülüşün.",
-  "Sen bugün sıradan bir günün güzel sebebi olabilirsin.",
-  "Senin enerjin bugün filtre kahve değil, direkt özel seri.",
-  "Bugün biraz havalı olmak serbest, hatta gerekli.",
-  "Kahve köpüğü gibi hafif ama etkisi büyük bir enerjin var.",
-  "Bugün gülüşünle birinin gününü güzelleştirebilirsin.",
-  "Kahve falı değil ama çark net konuştu: bugün tatlısın.",
-  "Kahve sıcak, gün güzel, sen zaten yeterince havalısın.",
-  "Bugün birinin içinden ‘ne güzel gülüyor’ geçebilir.",
-  "Kahve seçimin bile stil sahibi, bugün modun yüksek.",
-  "Bugün biraz parlıyorsun, kahve de bunu saklayamadı."
-];
 
 function normalizeRotation(angle){
   return ((angle % 360) + 360) % 360;
@@ -1182,14 +1256,6 @@ function getSelectedCoffeeIndex(angle){
   const pointerAngle = (360 - normalizedAngle) % 360;
 
   return Math.floor(pointerAngle / segment) % coffees.length;
-}
-
-function getSelectedIdeaIndex(angle){
-  const segment = 360 / ideas.length;
-  const normalizedAngle = normalizeRotation(angle);
-  const pointerAngle = (360 - normalizedAngle) % 360;
-
-  return Math.floor(pointerAngle / segment) % ideas.length;
 }
 
 function getLastCompliment(){
@@ -1216,17 +1282,13 @@ function saveLastCompliment(compliment){
   }
 }
 
-function getRandomCompliment(){
+function getRandomCompliment(coffee){
   const lastCompliment = getLastCompliment();
-  let activePool = Math.random() < 0.7 ? standoutCompliments : compliments;
-  let selected = activePool[Math.floor(Math.random() * activePool.length)];
-  let guard = 0;
-
-  while(compliments.length > 1 && selected === lastCompliment && guard < 10){
-    activePool = Math.random() < 0.7 ? standoutCompliments : compliments;
-    selected = activePool[Math.floor(Math.random() * activePool.length)];
-    guard += 1;
-  }
+  const availableCompliments = coffee.compliments.filter(function(compliment){
+    return compliment !== lastCompliment;
+  });
+  const activePool = availableCompliments.length ? availableCompliments : coffee.compliments;
+  const selected = activePool[Math.floor(Math.random() * activePool.length)];
 
   saveLastCompliment(selected);
 
@@ -1242,8 +1304,24 @@ function getIdeaCompareValue(value){
 }
 
 function loadIdeas(){
+  let storedValue = null;
+
   try{
-    const stored = JSON.parse(window.localStorage.getItem(IDEA_STORAGE_KEY) || "[]");
+    storedValue = window.localStorage.getItem(IDEA_STORAGE_KEY);
+  }catch(error){
+    storedValue = null;
+  }
+
+  if(!storedValue){
+    try{
+      storedValue = window.sessionStorage.getItem(IDEA_STORAGE_KEY);
+    }catch(error){
+      storedValue = null;
+    }
+  }
+
+  try{
+    const stored = JSON.parse(storedValue || "[]");
 
     if(!Array.isArray(stored)){
       return [];
@@ -1268,17 +1346,34 @@ function loadIdeas(){
   }
 }
 
-function saveIdeas(){
-  window.localStorage.setItem(IDEA_STORAGE_KEY, JSON.stringify(ideas));
+function saveIdeas(nextIdeas){
+  const serializedIdeas = JSON.stringify(nextIdeas);
+
+  try{
+    window.localStorage.setItem(IDEA_STORAGE_KEY, serializedIdeas);
+    return true;
+  }catch(error){
+    try{
+      window.sessionStorage.setItem(IDEA_STORAGE_KEY, serializedIdeas);
+      return true;
+    }catch(storageError){
+      return false;
+    }
+  }
 }
 
 function setIdeaNoteText(){
-  if(ideas.length < 2){
-    ideaNote.innerHTML = "&#199;ark i&ccedil;in en az 2 fikir ekle.";
+  if(ideas.length === 0){
+    ideaNote.textContent = "İlk kahve önerisini sen bırakabilirsin.";
     return;
   }
 
-  ideaNote.innerHTML = "Fikir &ccedil;ark&#305;n haz&#305;r g&ouml;r&uuml;n&uuml;yor.";
+  if(ideas.length === 1){
+    ideaNote.textContent = "Bir öneri daha eklenirse çark hazır.";
+    return;
+  }
+
+  ideaNote.textContent = ideas.length + " kahve önerisi çarkta hazır.";
 }
 
 function renderIdeaWheel(){
@@ -1320,7 +1415,7 @@ function renderIdeas(){
     removeBtn.className = "idea-remove";
     removeBtn.type = "button";
     removeBtn.innerHTML = "&times;";
-    removeBtn.setAttribute("aria-label", idea + " fikrini sil");
+    removeBtn.setAttribute("aria-label", idea + " önerisini sil");
     removeBtn.setAttribute("data-idea-remove", String(index));
 
     tag.appendChild(text);
@@ -1329,16 +1424,16 @@ function renderIdeas(){
   });
 
   setIdeaNoteText();
-  ideaLimit.innerHTML = ideas.length >= IDEA_MAX_COUNT
-    ? "Maksimum 8 fikre ula&#351;t&#305;n."
-    : "En fazla 8 fikir ekleyebilirsin.";
+  ideaLimit.textContent = ideas.length >= IDEA_MAX_COUNT
+    ? "Sekiz önerilik çark tamamlandı."
+    : "En fazla 8 kahve önerisi eklenebilir.";
 
   ideaOpenBtn.disabled = ideas.length < 2;
   ideaInput.disabled = ideas.length >= IDEA_MAX_COUNT;
   ideaAddBtn.disabled = ideas.length >= IDEA_MAX_COUNT;
   ideaInput.placeholder = ideas.length >= IDEA_MAX_COUNT
-    ? "Maksimum 8 fikir eklendi."
-    : "Örn: Milkshake vb.";
+    ? "Öneri çarkı doldu."
+    : "Örn: Cortado, Flat White...";
 }
 
 function addIdea(){
@@ -1348,22 +1443,48 @@ function addIdea(){
   });
 
   if(!value){
+    ideaNote.textContent = "Önce küçük bir kahve önerisi yazmalısın.";
     return;
   }
 
-  if(duplicate || ideas.length >= IDEA_MAX_COUNT){
+  if(duplicate){
+    ideaNote.textContent = value + " zaten öneri çarkında.";
     return;
   }
 
-  ideas.push(value);
+  if(ideas.length >= IDEA_MAX_COUNT){
+    ideaNote.textContent = "Çark sekiz güzel öneriyle tamamlandı.";
+    return;
+  }
+
+  const nextIdeas = ideas.concat(value);
+
+  if(!saveIdeas(nextIdeas)){
+    ideaNote.textContent = "Öneri şu an kaydedilemedi; bir kez daha deneyebiliriz.";
+    return;
+  }
+
+  ideas = nextIdeas;
   ideaInput.value = "";
-  saveIdeas();
   renderIdeas();
+  ideaNote.textContent = value + " çarka eklendi ☕";
 }
 
 function removeIdea(index){
-  ideas.splice(index, 1);
-  saveIdeas();
+  if(!Number.isInteger(index) || index < 0 || index >= ideas.length){
+    return;
+  }
+
+  const nextIdeas = ideas.filter(function(_, ideaIndex){
+    return ideaIndex !== index;
+  });
+
+  if(!saveIdeas(nextIdeas)){
+    ideaNote.textContent = "Öneri şu an kaldırılamadı; bir kez daha deneyebiliriz.";
+    return;
+  }
+
+  ideas = nextIdeas;
   renderIdeas();
 }
 
@@ -1372,17 +1493,32 @@ function openIdeaModal(){
     return;
   }
 
+  lastFocusedElement = ideaOpenBtn;
   renderIdeaWheel();
-  ideaResult.textContent = "Bugünün fikri: Hazır mı?";
-  ideaResultMessage.textContent = "Bence bu bahaneyle güzel bir gün başlar ☕";
+  ideaResult.textContent = "Sıradaki kahvem: Hazır mı?";
+  ideaResultMessage.textContent = "Bakalım çark hangi öneriyi önümüze getirecek ☕";
   ideaAgainBtn.disabled = true;
   ideaModal.classList.add("show");
   ideaModal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("modal-open");
+  window.requestAnimationFrame(function(){
+    ideaCloseBtn.focus();
+  });
 }
 
 function closeIdeaModal(){
+  window.clearTimeout(ideaSpinTimer);
+  ideaSpinTimer = 0;
+  ideaSpinning = false;
+  ideaSpinBtn.disabled = false;
+  ideaAgainBtn.disabled = true;
   ideaModal.classList.remove("show");
   ideaModal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("modal-open");
+
+  if(lastFocusedElement && typeof lastFocusedElement.focus === "function"){
+    lastFocusedElement.focus();
+  }
 }
 
 function spinIdeaWheel(){
@@ -1395,8 +1531,10 @@ function spinIdeaWheel(){
   ideaSpinBtn.disabled = true;
   ideaAgainBtn.disabled = true;
 
-  const index = Math.floor(Math.random() * ideas.length);
-  const segment = 360 / ideas.length;
+  const spinIdeas = ideas.slice();
+  const index = Math.floor(Math.random() * spinIdeas.length);
+  const selectedIdea = spinIdeas[index];
+  const segment = 360 / spinIdeas.length;
   const targetAngle = 360 - (index * segment + segment / 2);
   const extraTurns = 360 * 5;
   const currentAngle = normalizeRotation(ideaRotation);
@@ -1405,27 +1543,46 @@ function spinIdeaWheel(){
   ideaRotation += extraTurns + deltaToTarget;
   ideaWheel.style.transform = "rotate(" + ideaRotation + "deg)";
 
-  window.setTimeout(function(){
-    const selectedIdea = ideas[getSelectedIdeaIndex(ideaRotation)];
-
-    ideaResult.textContent = "Bugünün fikri: " + selectedIdea;
-    ideaResultMessage.textContent = "Bence bu bahaneyle güzel bir gün başlar ☕";
+  ideaSpinTimer = window.setTimeout(function(){
+    ideaResult.textContent = "Sıradaki kahvem: " + selectedIdea;
+    ideaResultMessage.textContent = "Bu öneri bir sonraki kahve molasına saklandı ☕";
     ideaSpinBtn.disabled = false;
     ideaAgainBtn.disabled = false;
     ideaSpinning = false;
-  }, 3000);
+    ideaSpinTimer = 0;
+  }, SPIN_DELAY);
 }
 
 function openModal(index){
-  coffeeName.innerHTML = "&#9825; " + coffees[index].name + " &#9825;";
-  coffeeMessage.textContent = getRandomCompliment();
+  const selectedCoffee = coffees[index];
+
+  lastFocusedElement = spinBtn;
+  window.clearTimeout(complimentRevealTimer);
+  modal.classList.remove("reveal-note");
+  coffeeName.textContent = "♡ " + selectedCoffee.name + " ♡";
+  coffeeMessage.textContent = getRandomCompliment(selectedCoffee);
   modal.classList.add("show");
   modal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("modal-open");
+  window.requestAnimationFrame(function(){
+    closeBtn.focus();
+  });
+  complimentRevealTimer = window.setTimeout(function(){
+    modal.classList.add("reveal-note");
+    complimentRevealTimer = 0;
+  }, NOTE_REVEAL_DELAY);
 }
 
 function closeModal(){
-  modal.classList.remove("show");
+  window.clearTimeout(complimentRevealTimer);
+  complimentRevealTimer = 0;
+  modal.classList.remove("show", "reveal-note");
   modal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("modal-open");
+
+  if(lastFocusedElement && typeof lastFocusedElement.focus === "function"){
+    lastFocusedElement.focus();
+  }
 }
 
 function spinWheel(){
@@ -1450,7 +1607,7 @@ function spinWheel(){
     openModal(getSelectedCoffeeIndex(rotation));
     spinning = false;
     spinBtn.disabled = false;
-  }, 3000);
+  }, SPIN_DELAY);
 }
 
 function bindPress(element, handler){
@@ -1477,7 +1634,6 @@ function bindPress(element, handler){
 
 bindPress(spinBtn, spinWheel);
 bindPress(closeBtn, closeModal);
-bindPress(okBtn, closeModal);
 bindPress(ideaAddBtn, addIdea);
 bindPress(ideaOpenBtn, openIdeaModal);
 bindPress(ideaCloseBtn, closeIdeaModal);
@@ -1497,13 +1653,50 @@ ideaModal.addEventListener("click", function(event){
   }
 });
 
-document.addEventListener("keydown", function(event){
-  if(event.key === "Escape" && modal.classList.contains("show")){
-    closeModal();
+function trapFocus(event, activeModal){
+  const focusableElements = Array.from(activeModal.querySelectorAll(
+    "button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex='-1'])"
+  ));
+
+  if(!focusableElements.length){
+    return;
   }
 
-  if(event.key === "Escape" && ideaModal.classList.contains("show")){
-    closeIdeaModal();
+  const firstElement = focusableElements[0];
+  const lastElement = focusableElements[focusableElements.length - 1];
+
+  if(event.shiftKey && document.activeElement === firstElement){
+    event.preventDefault();
+    lastElement.focus();
+    return;
+  }
+
+  if(!event.shiftKey && document.activeElement === lastElement){
+    event.preventDefault();
+    firstElement.focus();
+  }
+}
+
+document.addEventListener("keydown", function(event){
+  const activeModal = ideaModal.classList.contains("show")
+    ? ideaModal
+    : modal.classList.contains("show") ? modal : null;
+
+  if(!activeModal){
+    return;
+  }
+
+  if(event.key === "Escape"){
+    if(activeModal === ideaModal){
+      closeIdeaModal();
+    }else{
+      closeModal();
+    }
+    return;
+  }
+
+  if(event.key === "Tab"){
+    trapFocus(event, activeModal);
   }
 });
 
