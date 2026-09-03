@@ -1160,6 +1160,7 @@ const ideaResultMessage = document.getElementById("ideaResultMessage");
 const coffees = [
   {
     name: "White Mocha",
+    weight: 19,
     compliments: [
       "White Mocha yumuşak bir seçim; ama gülüşün ondan daha sıcak.",
       "Bu kahveye bugün en çok zarif tarzın ve güzel gülüşün yakışacak.",
@@ -1170,6 +1171,7 @@ const coffees = [
   },
   {
     name: "Ice Latte",
+    weight: 19,
     compliments: [
       "Ice Latte serin olabilir; gülüşün ortamın bütün havasını ısıtıyor.",
       "Tarzın Ice Latte kadar cool, gülüşünse beklenmedik kadar sıcak.",
@@ -1180,6 +1182,7 @@ const coffees = [
   },
   {
     name: "Caramel Latte",
+    weight: 19,
     compliments: [
       "Caramel Latte tatlı bir seçim; ama bugünün tatlılığı konusunda yalnız değil.",
       "Karamel bu kahveye, güzel enerjin de bugüne çok yakışıyor.",
@@ -1190,6 +1193,7 @@ const coffees = [
   },
   {
     name: "Latte Spanish",
+    weight: 17,
     compliments: [
       "Latte Spanish karakterli bir seçim; bugünkü tarzın gibi.",
       "Bu kahvenin havası güçlü, ama gülüşün sahneyi yine de çalıyor.",
@@ -1200,6 +1204,7 @@ const coffees = [
   },
   {
     name: "Mocha",
+    weight: 7,
     compliments: [
       "Mocha yoğun olabilir; gülüşünün etkisi biraz daha güçlü.",
       "Bugünkü tarzın Mocha kadar karakterli, gülüşünse çok daha yumuşak.",
@@ -1210,6 +1215,7 @@ const coffees = [
   },
   {
     name: "Vanilla Latte",
+    weight: 19,
     compliments: [
       "Vanilla Latte zarif bir seçim; bugünkü enerjin gibi.",
       "Bu kahvenin sadeliğine tarzın, sıcaklığına gülüşün yakışıyor.",
@@ -1222,6 +1228,7 @@ const coffees = [
 
 let rotation = 0;
 let spinning = false;
+let lastCoffeeIndex = -1;
 let touchTriggered = false;
 const IDEA_STORAGE_KEY = "kahve-carki-fikirler";
 const LAST_COMPLIMENT_KEY = "lastCompliment";
@@ -1585,6 +1592,30 @@ function closeModal(){
   }
 }
 
+function getWeightedCoffeeIndex(){
+  const candidates = coffees
+    .map(function(coffee, index){
+      return { index: index, weight: coffee.weight };
+    })
+    .filter(function(candidate){
+      return candidate.index !== lastCoffeeIndex;
+    });
+  const totalWeight = candidates.reduce(function(total, candidate){
+    return total + candidate.weight;
+  }, 0);
+  let randomWeight = Math.random() * totalWeight;
+
+  for(let i = 0; i < candidates.length; i += 1){
+    randomWeight -= candidates[i].weight;
+
+    if(randomWeight < 0){
+      return candidates[i].index;
+    }
+  }
+
+  return candidates[candidates.length - 1].index;
+}
+
 function spinWheel(){
   if(spinning){
     return;
@@ -1593,7 +1624,8 @@ function spinWheel(){
   spinning = true;
   spinBtn.disabled = true;
 
-  const index = Math.floor(Math.random() * coffees.length);
+  const index = getWeightedCoffeeIndex();
+  lastCoffeeIndex = index;
   const segment = 360 / coffees.length;
   const targetAngle = 360 - (index * segment + segment / 2);
   const extraTurns = 360 * 5;

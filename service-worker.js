@@ -1,4 +1,4 @@
-const CACHE_NAME = "kahve-carki-v6";
+const CACHE_NAME = "kahve-carki-v7";
 const APP_SHELL = [
   "./",
   "./index.html",
